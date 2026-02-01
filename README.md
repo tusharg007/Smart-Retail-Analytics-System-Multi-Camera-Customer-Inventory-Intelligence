@@ -237,12 +237,9 @@ Include in your resume:
 
 MIT License - Free for portfolio and resume use
 
-## 🤝 Contributing
 
-This is a resume project template. Fork and customize for your needs!
 
 ---
 
 **Estimated Completion Time:** 3-4 hours
-**Difficulty:** Intermediate to Advanced
-**Best For:** ML Engineer, CV Engineer, Data Scientist roles
+
