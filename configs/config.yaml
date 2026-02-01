@@ -1,0 +1,51 @@
+# Smart Retail CV Configuration
+
+project:
+  name: smart_retail_cv
+  version: 1.0.0
+  
+data:
+  raw_video_dir: data/raw/videos
+  processed_dir: data/processed
+  annotations_dir: data/annotations
+  train_split: 0.8
+  val_split: 0.2
+  
+models:
+  detection:
+    architecture: yolov8n
+    input_size: 640
+    conf_threshold: 0.5
+    iou_threshold: 0.45
+    
+  inventory:
+    architecture: vit_tiny_patch16_224
+    num_classes: 10
+    input_size: 224
+    
+training:
+  detection:
+    epochs: 20
+    batch_size: 16
+    learning_rate: 0.001
+    optimizer: Adam
+    
+  inventory:
+    epochs: 10
+    batch_size: 32
+    learning_rate: 0.0001
+    
+inference:
+  fps: 3
+  max_cameras: 4
+  tracking_method: deepsort
+  save_output: true
+  
+api:
+  host: 0.0.0.0
+  port: 8000
+  workers: 4
+  
+monitoring:
+  mlflow_tracking_uri: ./mlruns
+  log_interval: 100
