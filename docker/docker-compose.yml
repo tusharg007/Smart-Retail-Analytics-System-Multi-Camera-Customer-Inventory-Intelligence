@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  # API Service
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: retail-cv-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../data:/app/data
+      - ../models:/app/models
+      - ../logs:/app/logs
+      - ../results:/app/results
+    environment:
+      - PYTHONUNBUFFERED=1
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+    command: python src/api/main.py
+    networks:
+      - retail-network
+    restart: unless-stopped
+  
+  # Dashboard Service
+  dashboard:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: retail-cv-dashboard
+    ports:
+      - "8501:8501"
+    volumes:
+      - ../dashboard:/app/dashboard
+      - ../data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: streamlit run dashboard/app.py --server.port=8501 --server.address=0.0.0.0
+    networks:
+      - retail-network
+    depends_on:
+      - api
+    restart: unless-stopped
+  
+  # Inference Service (optional - for background processing)
+  inference:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: retail-cv-inference
+    volumes:
+      - ../data:/app/data
+      - ../models:/app/models
+      - ../results:/app/results
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: python -c "print('Inference service ready. Run processing scripts manually.')"
+    networks:
+      - retail-network
+    restart: unless-stopped
+
+networks:
+  retail-network:
+    driver: bridge
+
+volumes:
+  data-volume:
+  models-volume:
+  results-volume:

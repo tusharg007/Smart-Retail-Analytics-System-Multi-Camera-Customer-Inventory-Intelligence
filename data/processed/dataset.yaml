@@ -1,0 +1,6 @@
+names:
+  0: person
+nc: 1
+path: E:\A+ Project\smart-retail-cv\smart-retail-cv\data\processed
+train: frames/train
+val: frames/val
