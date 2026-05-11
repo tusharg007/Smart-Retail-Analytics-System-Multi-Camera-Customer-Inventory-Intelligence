@@ -18,6 +18,12 @@ import sys
 # Add src to path
 sys.path.append(str(Path(__file__).parent.parent))
 
+try:
+    from src.inference.anomaly_reporter import AnomalyReporter
+    reporter = AnomalyReporter()
+except ImportError:
+    reporter = None
+
 app = FastAPI(
     title="Smart Retail Analytics API",
     description="Computer Vision API for retail customer and inventory analytics",
@@ -257,6 +263,15 @@ async def sync_with_pos(transaction_data: dict):
         "records_synced": len(transaction_data.get('transactions', [])),
         "timestamp": datetime.now().isoformat()
     }
+
+@app.post("/api/v1/generate-report")
+async def generate_report(analytics_state: dict):
+    """Generate an AI report based on the current analytics state"""
+    if reporter:
+        report = reporter.generate_report(analytics_state)
+    else:
+        report = "Report unavailable. Reporter module not loaded."
+    return {"report": report}
 
 @app.get("/api/v1/stats/summary")
 async def get_stats_summary():
